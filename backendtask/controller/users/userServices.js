@@ -16,7 +16,7 @@ exports.insertService = async (req) => {
             const query1 = `SELECT email FROM user WHERE email=?`;
             const [result] = await connectionPromise.query(query1, [email]);
             if (result.length != 0) {
-                return { status: false, error: "User already exists" }
+                return { status: false, error: "Email already exists!" }
             } else {
                 //bcrypt password
                 const hashedPassword = await bcrypt.hash(password, 10);
@@ -24,7 +24,7 @@ exports.insertService = async (req) => {
                 const query2 = 'INSERT INTO user (roleId, firstName, lastName, email, password) VALUES (?,?,?,?,?)'
                 const values = [rolId, firstName, lastName, email, hashedPassword]
                 const [result] = await connectionPromise.query(query2, values)
-                return { status: true, result }
+                return { status: true, result:"You are register successfully!" }
             }
         }
     } catch (error) {
@@ -55,11 +55,11 @@ exports.userLoginService = async (req) => {
                     if (result[0].role == "admin") {
                         return { status: true, result: "Login successful!" };
                     } else {
-                        return { status: false, result: "You are not allowed to login from here" };
+                        return { status: false, error: "You are not allowed to login from here" };
                     }
                 } else {
                     return {
-                        status: false, result: "Invalid credentials."
+                        status: false, error: "Invalid credentials."
                     };
                 }
             }
